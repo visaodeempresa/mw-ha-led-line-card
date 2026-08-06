@@ -12,6 +12,9 @@ entity: light.led_da_cama_da_suite
 ![Nove cards: cena ativa com degradê, branco 2700 K, lista de cenas, variações
 de desenho e os estados apagada e indisponível](docs/galeria.png)
 
+*Gerado por `tools/preview.html` — o YAML de cada card está na
+[galeria](#galeria).*
+
 Irmão de tela do
 [MW LED Line Element](https://github.com/visaodeempresa/mw-ha-led-line-element),
 que desenha a mesma fita dentro do `picture-elements`. O motor de cor, o mapa
@@ -74,6 +77,92 @@ desenho — `rainbow`, `chase`, `comet`, `scan`, `twinkle`, `strobe`, `fire`,
 `flicker`, `wave`, `pulse`, `breathe`. `effect_map` ensina os nomes do seu
 driver; `animation: none` deixa a fita quieta. Tudo anima só `opacity`,
 `filter` e `stroke-dashoffset`, e `prefers-reduced-motion` desliga.
+
+## Galeria
+
+Os nove cards da imagem lá de cima, com o YAML que os produz. As luzes da
+bancada são de mentira (`tools/preview.html` traz o seu próprio `hass` de
+bolso), mas a configuração é a mesma que vai para o dashboard.
+
+### 1 · o card completo
+
+```yaml
+# a fita da cama com a cena "Iceland blue" no ar: a paleta da cena pinta o
+# degradê da serpentina e lava o card inteiro de azul. Nada além da entidade.
+type: custom:mw-led-line-card
+entity: light.led_da_cama_da_suite
+```
+
+```yaml
+# a fita branca da cozinha (só color_temp): o card esconde a aba de cenas
+# sozinho e troca as pastilhas de cor por brancos em Kelvin
+type: custom:mw-led-line-card
+entity: light.fita_da_cozinha
+```
+
+```yaml
+# a mesma coisa abrindo direto na lista de cenas — cada uma com as bolinhas
+# da sua paleta, a ativa marcada com a cor da luz
+type: custom:mw-led-line-card
+entity: light.led_da_sala
+default_tab: scene
+```
+
+### 2 · variações de desenho
+
+```yaml
+# enfeite de cabeceira: um traço reto e mais nada
+type: custom:mw-led-line-card
+entity: light.fita_do_hall
+shape: line
+collapsed: true
+strip_height: 80
+```
+
+```yaml
+# onda, fita contínua (sem os LEDs desenhados)
+type: custom:mw-led-line-card
+entity: light.fita_do_hall
+shape: wave
+pixels: 0
+collapsed: true
+strip_height: 110
+```
+
+```yaml
+# serpentina de 6 voltas com fita fina, brilho no card e nenhuma pastilha
+type: custom:mw-led-line-card
+entity: light.led_da_cama_da_suite
+rows: 6
+thickness: 9
+pixels: 44
+show_colors: false
+show_effects: false
+```
+
+### 3 · estados e traçado próprio
+
+```yaml
+# apagada: a fita fica cinza, o slider mostra "—" e o card perde a cor
+type: custom:mw-led-line-card
+entity: light.fita_da_varanda
+```
+
+```yaml
+# indisponível: fita vermelha esmaecida e card inteiro sem resposta ao toque
+type: custom:mw-led-line-card
+entity: light.fita_sumida
+```
+
+```yaml
+# o traçado real da bancada, em % da área do card
+type: custom:mw-led-line-card
+entity: light.led_da_bancada
+shape: custom
+points: 10 80, 10 25, 90 25, 90 70
+collapsed: true
+strip_height: 130
+```
 
 ## Opções
 
