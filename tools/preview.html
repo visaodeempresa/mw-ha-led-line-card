@@ -1,0 +1,113 @@
+<!doctype html>
+<!-- Bancada do mw-led-line-card: roda no navegador, sem Home Assistant.
+     Stubs de <ha-card> e <ha-icon> + um `hass` de bolso. -->
+<html lang="pt-BR"><head><meta charset="utf-8"><title>MW LED Line Card</title>
+<style>
+  :root{
+    --card-background-color:#1c2230;
+    --primary-text-color:#e8eef7;
+    --secondary-text-color:#93a4bb;
+    --ha-card-border-radius:16px;
+  }
+  body{margin:0;background:#0f131b;font:14px/1.45 system-ui,-apple-system,sans-serif;padding:18px}
+  h2{font:600 13px/1 system-ui;color:#7cf;margin:20px 0 10px}
+  .grid{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+  .col{width:340px}
+  .cap{font-size:11px;color:#7f93ad;margin-top:6px}
+</style></head><body>
+<script>
+  // --- stubs dos elementos do HA ---
+  customElements.define("ha-card", class extends HTMLElement {
+    connectedCallback(){
+      if(this._d) return; this._d = true;
+      this.attachShadow({mode:"open"}).innerHTML =
+        `<style>:host{display:block;background:var(--card-background-color);
+          border-radius:var(--ha-card-border-radius,16px);
+          box-shadow:0 2px 12px rgba(0,0,0,.35);color:var(--primary-text-color)}</style><slot></slot>`;
+    }
+  });
+  const GLYPH = { "mdi:power":"⏻", "mdi:led-strip-variant":"≋", "mdi:lightbulb":"◉" };
+  customElements.define("ha-icon", class extends HTMLElement {
+    static get observedAttributes(){ return ["icon"]; }
+    attributeChangedCallback(){ this.textContent = GLYPH[this.getAttribute("icon")] || "◉"; }
+    connectedCallback(){ this.style.cssText="font-size:20px;line-height:1";
+      this.textContent = GLYPH[this.getAttribute("icon")] || "◉"; }
+  });
+
+  const SCENES = ["Iceland blue","Glacier express","Sea of clouds","Fireworks at sea",
+    "Hut in the snow","Forest morning","Candle light","Sunset boulevard","Neon city",
+    "Rainbow flow","Theater Chase","Deep night","Romantic rose","Festa da Cris"];
+
+  const S = {
+    "light.cama": { state:"on", attributes:{ friendly_name:"LED da Cama da Suíte",
+      brightness:230, rgb_color:[168,60,255], effect:"Iceland blue", effect_list:SCENES,
+      supported_color_modes:["rgb","color_temp"], color_mode:"rgb" } },
+    "light.cozinha": { state:"on", attributes:{ friendly_name:"Fita da Cozinha",
+      brightness:150, color_temp_kelvin:2700, color_mode:"color_temp",
+      supported_color_modes:["color_temp"] } },
+    "light.sala": { state:"on", attributes:{ friendly_name:"LED da Sala",
+      brightness:255, rgb_color:[255,90,40], effect:"Candle light", effect_list:SCENES,
+      supported_color_modes:["rgb"], color_mode:"rgb" } },
+    "light.hall": { state:"on", attributes:{ friendly_name:"Fita do Hall",
+      brightness:200, rgb_color:[60,220,160], effect_list:SCENES,
+      supported_color_modes:["rgb"], color_mode:"rgb" } },
+    "light.off": { state:"off", attributes:{ friendly_name:"Fita da Varanda",
+      supported_color_modes:["rgb"] } },
+    "light.nope": { state:"unavailable", attributes:{ friendly_name:"Fita Sumida" } },
+  };
+  const HASS = { states:S, callService:(d,s,x)=>console.log("callService",d,s,x),
+    localize:()=>"" , themes:{} };
+</script>
+<script>
+  // o file:// guarda o JS em cache e a bancada mostra a versão velha —
+  // carregar com selo de tempo é o que faz cada F5 valer a edição
+  const col = (label, cfg) => {
+    const c = document.createElement("div"); c.className = "col";
+    const card = document.createElement("mw-led-line-card");
+    card.setConfig(cfg); card.hass = HASS;
+    const cap = document.createElement("div"); cap.className="cap"; cap.textContent=label;
+    c.appendChild(card); c.appendChild(cap);
+    return c;
+  };
+  const row = (title, cols) => {
+    const h=document.createElement("h2"); h.textContent=title;
+    const g=document.createElement("div"); g.className="grid";
+    cols.forEach((x)=>g.appendChild(x));
+    document.body.appendChild(h); document.body.appendChild(g);
+  };
+
+  const bench = () => {
+  row("1 · o card completo", [
+    col("cena ativa: a fita usa a paleta do nome «Iceland blue»",
+      { entity:"light.cama" }),
+    col("branco 2700 K, sem cenas — só cor e brilho",
+      { entity:"light.cozinha" }),
+    col("cada cena com a paleta do próprio nome (default_tab: scene)",
+      { entity:"light.sala", default_tab:"scene" }),
+  ]);
+
+  row("2 · variações de desenho", [
+    col("shape: line · collapsed (só a fita)",
+      { entity:"light.hall", shape:"line", collapsed:true, strip_height:80 }),
+    col("shape: wave · sem LEDs (fita contínua)",
+      { entity:"light.hall", shape:"wave", pixels:0, collapsed:true, strip_height:110 }),
+    col("serpentina de 6 voltas, fita fina",
+      { entity:"light.cama", rows:6, thickness:9, pixels:44,
+        show_colors:false, show_effects:false }),
+  ]);
+
+  row("3 · estados", [
+    col("apagada", { entity:"light.off" }),
+    col("indisponível", { entity:"light.nope" }),
+    col("pontos próprios (shape: custom)",
+      { entity:"light.sala", shape:"custom", points:"10 80, 10 25, 90 25, 90 70",
+        collapsed:true, strip_height:130 }),
+  ]);
+  };
+
+  const s = document.createElement("script");
+  s.src = "../dist/mw-led-line-card.js?" + Date.now();
+  s.onload = bench;
+  document.head.appendChild(s);
+</script>
+</body></html>

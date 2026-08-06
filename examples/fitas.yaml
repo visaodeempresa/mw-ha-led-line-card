@@ -1,0 +1,42 @@
+# O card inteiro: fita, brilho, cores e cenas.
+type: custom:mw-led-line-card
+entity: light.led_da_cama_da_suite
+
+---
+# Fita cheia de cenas: abre já na lista, com as paletas da casa por escrito.
+type: custom:mw-led-line-card
+entity: light.led_da_sala
+default_tab: scene
+effects_max: 40
+effect_palettes:
+  Festa da Cris: ["#ff2d95", "#ffd200", "#00e5ff"]
+  Modo Cinema: ["#3a1c71", "#d76d77", "#ffaf7b"]
+
+---
+# Fita branca (só temperatura): sem aba de cenas, brancos em Kelvin.
+type: custom:mw-led-line-card
+entity: light.fita_da_cozinha
+shape: line
+show_effects: false
+kelvin_presets: [2200, 2700, 4000, 6500]
+
+---
+# Enfeite de cabeceira: só o desenho, fino e discreto, sem comandos.
+type: custom:mw-led-line-card
+entity: light.led_da_cabeceira
+shape: wave
+collapsed: true
+strip_height: 90
+thickness: 8
+pixels: 0
+
+---
+# A fita que contorna a bancada, no traçado real, dentro de uma grade.
+type: custom:mw-led-line-card
+entity: light.led_da_bancada
+shape: custom
+points: 10 80, 10 25, 90 25, 90 70
+strip_height: 140
+show_brightness: true
+show_colors: true
+show_effects: false
